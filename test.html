@@ -1,0 +1,33 @@
+<html>
+	<head>
+		<title>跨域上传</title>
+		<meta charset="utf-8" />
+		<script src="jquery.min.js"></script>
+		<script src="xlyjs.js"></script>
+	</head>
+	<body>
+		<a href="javascript:void(0)" onclick="upload()">上传图片</a><br /><br />
+		<img class="re" src="" width="150px" height="100px"/>
+		<script>
+			function upload(){
+				var upload = "http://www.site2.com/jq_upload/upload_bak.php";//远程上传接口
+				var callbackurl = "http://www.site4.com/upload_callback_func.php";//回调url
+				$.app.method.upload(upload,callbackurl,function(data){
+					if(data.msg && (typeof(data.msg) == 'string' || typeof(data.msg.url) == 'string')){
+						var url = (typeof(data.msg) == 'string') ? data.msg : data.msg.url;
+						console.log(url);
+						$(".re").attr('src',data.msg.url);
+					}else{
+						var tip = data.err ? data.err : '上传失败';
+						$.app.method.tip('提示信息', tip, 'error');
+					}
+				},function(filename){ 
+					if(!filename.match(/\.jpg$|\.jpeg$|\.png$|\.gif$|\.bmp$/i)){
+						$.app.method.tip('上传文件后缀不允许');
+						return false;
+					}
+					return true;
+				});}
+		</script>
+	</body>
+</html>
